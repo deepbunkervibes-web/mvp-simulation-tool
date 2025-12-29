@@ -8,7 +8,7 @@ This log tracks all ceremonial deployments of the FormatDisc MVP Simulation Tool
 | Date       | Environment    | Version              | Verdict | Hash/Notes                                                                                    |
 | :---       | :---           | :---                 | :---    | :---                                                                                          |
 | 2025-12-29 | **GITHUB**     | v1.0.0-INSTITUTIONAL | **GO**  | Initial institutional release. Commit: 1916eeb. Pushed to `deepbunkervibes-web/mvp-simulation-tool`. |
-| 2025-12-29 | **CLOUDFLARE** | v1.0.0-INSTITUTIONAL | PENDING | Awaiting Cloudflare Pages deployment. Build config verified. Custom domain TBD.               |
+| 2025-12-29 | **VERCEL**     | v1.0.0-INSTITUTIONAL | **GO**  | Live at <https://mvp-simulation-tool.vercel.app>. Build successful. Public surface established. Commit: 1515af2. |
 
 ---
 
