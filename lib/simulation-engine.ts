@@ -2,8 +2,8 @@
 // Core logic for business model validation
 
 import { calculateCreditRating, type CreditRating } from "@/lib/credit-rating"
-import { executeMVE } from "@/lib/engines/mve"
-import { executeGCE } from "@/lib/engines/gce"
+import { executeMVE } from "@/lib/mve"
+import { executeGCE } from "@/lib/gce"
 
 export interface SimulationInputs {
   monthlyLeads: number

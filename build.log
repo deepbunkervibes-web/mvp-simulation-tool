@@ -1,0 +1,23 @@
+   ▲ Next.js 15.2.8
+
+   Creating an optimized production build ...
+Failed to compile.
+
+./lib/simulation-engine.ts
+Module not found: Can't resolve '@/lib/engines/mve'
+
+https://nextjs.org/docs/messages/module-not-found
+
+Import trace for requested module:
+./app/page.tsx
+
+./lib/simulation-engine.ts
+Module not found: Can't resolve '@/lib/engines/gce'
+
+https://nextjs.org/docs/messages/module-not-found
+
+Import trace for requested module:
+./app/page.tsx
+
+
+> Build failed because of webpack errors
