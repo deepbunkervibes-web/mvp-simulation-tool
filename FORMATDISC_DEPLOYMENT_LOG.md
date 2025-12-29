@@ -7,4 +7,5 @@ This log tracks all ceremonial deployments of the FormatDisc MVP Simulation Tool
 
 | Date       | Environment    | Version              | Verdict | Hash/Notes                                                                     |
 | :---       | :---           | :---                 | :---    | :---                                                                           |
+| 2025-12-29 | **PRODUCTION** | v1.0.1-INSTITUTIONAL | **GO**  | Deployed to Cloudflare Pages via GitHub Actions.                               |
 | 2025-12-29 | **PRODUCTION** | v1.0.0-INSTITUTIONAL | **GO**  | Initial institutional release. Credit Rating engine active. Tailwind v4 locked.|
