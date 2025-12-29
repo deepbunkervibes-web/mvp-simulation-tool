@@ -1,94 +1,44 @@
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Fdeepbunkervibes-web%2Fmvp-simulation-tool&project-name=mvp-simulation-tool&repository-name=mvp-simulation-tool)
+
+# MVP Simulation Tool - INSTANT DEPLOY
+
+## 🚀 ONE CLICK DEPLOY
+
+**Click the button above** ↑ - to je sve što trebaš.
+
+Vercel će:
+
+1. Klonirati repo
+2. Automatski detektirati Next.js
+3. Pokrenuti build
+4. Dati ti URL
+
+**Trajanje: 2 minute.**
+
+---
+
+## Alternative Deploy Options
+
+### Vercel (Recommended - Fastest)
+
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Fdeepbunkervibes-web%2Fmvp-simulation-tool)
+
+### Cloudflare Pages
+
 [![Deploy to Cloudflare Pages](https://deploy.workers.cloudflare.com/button)](https://deploy.workers.cloudflare.com/?url=https://github.com/deepbunkervibes-web/mvp-simulation-tool)
 
-# MVP Simulation Tool
+### Netlify
 
-> **Status:** GOVERNED  
-> **Protocol:** SLAVKO-V7-ORCHESTRATION  
-> **Deployment:** One-Click to Cloudflare Pages
-
-## 🚀 Quick Deploy
-
-Click the button above to deploy to Cloudflare Pages in one click.
-
-**Build Configuration:**
-
-- Framework: Next.js 15.2.8
-- Build Command: `pnpm run build`
-- Output Directory: `.next`
-- Node Version: 18+
+[![Deploy to Netlify](https://www.netlify.com/img/deploy/button.svg)](https://app.netlify.com/start/deploy?repository=https://github.com/deepbunkervibes-web/mvp-simulation-tool)
 
 ---
 
-## 🏛️ Institutional Alignment
+## Build Configuration
 
-This tool adheres to `INSTITUTIONAL_SPECIFICATION_v1.0.md`, governed by FormatDisc-grade reputational protocols.
-
-- **Simulation Engine**: Deterministic, audit-grade verification.
-- **Verdict Protocol**: GO/NO-GO + Credit Rating (AAA-CCC).
-- **UI Layer**: Ceremonial interface with reputational clarity.
-- **Deployment**: Verified for Cloudflare Pages with Tailwind v4.
-
----
-
-## Architecture
-
-### Triple-Engine System
-
-1. **Market Validation Engine (MVE)**: Quantifies leads, validation, market resonance
-2. **Financial Projection Engine (FPE)**: Pricing, CAC, revenue, financial resilience
-3. **Growth & Confidence Engine (GCE)**: Churn, horizon, confidence stability
-
-### Credit Rating Module
-
-- Institutional ratings: **AAA** → **CCC**
-- Deterministic thresholds
-- Standalone module: `lib/credit-rating.ts`
-
----
-
-## Local Development
-
-```bash
-# Install dependencies
-pnpm install
-
-# Run development server
-pnpm dev
-
-# Build for production
-pnpm run build
-```
-
----
-
-## Deployment
-
-### Build Command
-
-```bash
-pnpm run build
-```
-
-### Output Directory
-
-```bash
-.next
-```
-
-### Environment Variables
-
-None required for v1.0.0. Optional for analytics:
-
-- `NEXT_PUBLIC_POSTHOG_KEY`
-- `NEXT_PUBLIC_POSTHOG_HOST`
-
----
-
-## Documentation
-
-- **Institutional Spec**: `INSTITUTIONAL_SPECIFICATION_v1.0.md`
-- **Deployment Config**: `CLOUDFLARE_DEPLOYMENT.md`
-- **Deployment Log**: `FORMATDISC_DEPLOYMENT_LOG.md`
+- **Framework:** Next.js 15.2.8
+- **Build Command:** `pnpm run build`
+- **Output Directory:** `.next`
+- **Node Version:** 18+
 
 ---
 
