@@ -81,6 +81,15 @@ export async function generatePDF(inputs: SimulationInputs, result: SimulationRe
   const splitReason = doc.splitTextToSize(result.verdictReason, pageWidth - margin * 2)
   doc.text(splitReason, margin, y)
   y += splitReason.length * 5 + 10
+  addLine()
+
+  // Credit Rating
+  addTitle("Institutional Credit Rating", 16)
+  doc.setFontSize(28)
+  doc.setTextColor(30, 30, 30)
+  doc.text(result.confidence.rating, pageWidth / 2, y + 15, { align: "center" })
+  y += 30
+  addLine()
 
   // Input Parameters
   addTitle("Input Parameters", 14)

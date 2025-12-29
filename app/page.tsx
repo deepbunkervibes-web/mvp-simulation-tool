@@ -5,6 +5,7 @@ import { Navbar } from "@/components/landing/Navbar"
 import { HeroSection } from "@/components/landing/HeroSection"
 import { StatsSection } from "@/components/landing/StatsSection"
 import { SimulationForm } from "@/components/simulation-form"
+import { SimulationChamber } from "@/components/simulation-chamber"
 import { VerdictCard } from "@/components/verdict-card"
 import { SummaryMetrics } from "@/components/summary-metrics"
 import { RevenueChart } from "@/components/revenue-chart"
@@ -12,6 +13,7 @@ import { CustomerGrowthChart } from "@/components/customer-growth-chart"
 import { MRRChart } from "@/components/mrr-chart"
 import { ConfidenceGauge } from "@/components/confidence-gauge"
 import { runSimulation, type SimulationInputs, type SimulationResult } from "@/lib/simulation-engine"
+import { analytics } from "@/lib/analytics"
 import { generatePDF } from "@/components/pdf-export"
 import {
   Rocket,
@@ -30,14 +32,23 @@ export default function HomePage() {
   const [result, setResult] = useState<SimulationResult | null>(null)
   const [inputs, setInputs] = useState<SimulationInputs | null>(null)
   const [isLoading, setIsLoading] = useState(false)
+  const [isChamberEntered, setIsChamberEntered] = useState(false)
   const simulatorRef = useRef<HTMLDivElement>(null)
 
   const handleSimulate = async (newInputs: SimulationInputs) => {
     setIsLoading(true)
     setInputs(newInputs)
+    analytics.capture("simulation_started", {
+      ...newInputs,
+    })
     await new Promise((resolve) => setTimeout(resolve, 1200))
     const simulationResult = runSimulation(newInputs)
     setResult(simulationResult)
+    analytics.capture("simulation_completed", {
+      verdict: simulationResult.verdict,
+      confidence: simulationResult.confidence.score,
+      rating: simulationResult.confidence.rating,
+    })
     setIsLoading(false)
   }
 
@@ -189,66 +200,141 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* Simulator Section */}
-      <section ref={simulatorRef} data-simulator className="py-24 scroll-mt-20">
-        <div className="container mx-auto px-6">
-          <div className="text-center mb-12">
-            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-green-500/10 border border-green-500/30 mb-6 text-sm text-green-400 font-medium">
-              <CheckCircle2 className="h-4 w-4" />
-              Live Simulator - No Sign Up Required
-            </div>
-            <h2 className="text-3xl md:text-5xl font-bold mb-4">
-              Try It{" "}
-              <span className="bg-gradient-to-r from-primary to-purple-400 bg-clip-text text-transparent">Now</span>
-            </h2>
-            <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-              Configure your business parameters and see real-time projections instantly.
-            </p>
-          </div>
+            {/* Simulator Section */}
 
-          <div className="grid lg:grid-cols-[420px_1fr] gap-8 max-w-7xl mx-auto">
-            {/* Form */}
-            <div className="lg:sticky lg:top-24 lg:self-start">
-              <SimulationForm onSubmit={handleSimulate} isLoading={isLoading} />
-            </div>
+            <section ref={simulatorRef} data-simulator className="py-24 scroll-mt-20">
 
-            {/* Results */}
-            <div className="space-y-6">
-              {result ? (
-                <>
-                  <VerdictCard result={result} onExportPDF={handleExportPDF} />
-                  <SummaryMetrics result={result} />
-                  <div className="grid md:grid-cols-2 gap-6">
-                    <RevenueChart projections={result.projections} />
-                    <CustomerGrowthChart projections={result.projections} />
-                  </div>
-                  <div className="grid md:grid-cols-2 gap-6">
-                    <MRRChart projections={result.projections} breakEvenMonth={result.summary.breakEvenMonth} />
-                    <ConfidenceGauge score={result.confidence.score} factors={result.confidence.factors} />
-                  </div>
-                </>
-              ) : (
-                <div className="flex items-center justify-center min-h-[600px] rounded-2xl border border-dashed border-border/50 bg-gradient-to-br from-card/30 to-card/10 backdrop-blur-sm">
-                  <div className="text-center p-8 max-w-md">
-                    <div className="relative mx-auto mb-6 w-24 h-24">
-                      <div className="absolute inset-0 rounded-full bg-gradient-to-r from-primary/20 to-purple-500/20 animate-pulse" />
-                      <div className="absolute inset-2 rounded-full bg-background flex items-center justify-center">
-                        <Rocket className="h-10 w-10 text-muted-foreground/50" />
+              <div className="container mx-auto px-6">
+
+                {!isChamberEntered ? (
+
+                  <SimulationChamber onEnter={() => setIsChamberEntered(true)} />
+
+                ) : (
+
+                  <>
+
+                    <div className="text-center mb-12">
+
+                      <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-green-500/10 border border-green-500/30 mb-6 text-sm text-green-400 font-medium">
+
+                        <CheckCircle2 className="h-4 w-4" />
+
+                        Live Simulator - No Sign Up Required
+
                       </div>
+
+                      <h2 className="text-3xl md:text-5xl font-bold mb-4">
+
+                        Try It{" "}
+
+                        <span className="bg-gradient-to-r from-primary to-purple-400 bg-clip-text text-transparent">
+
+                          Now
+
+                        </span>
+
+                      </h2>
+
+                      <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+
+                        Configure your business parameters and see real-time projections instantly.
+
+                      </p>
+
                     </div>
-                    <h3 className="text-2xl font-semibold mb-3">Ready to Launch</h3>
-                    <p className="text-muted-foreground leading-relaxed">
-                      Configure your business parameters on the left panel and click
-                      <span className="text-primary font-medium"> Run Simulation </span>
-                      to generate comprehensive projections and insights.
-                    </p>
-                  </div>
-                </div>
-              )}
-            </div>
-          </div>
-        </div>
-      </section>
+
+      
+
+                    <div className="grid lg:grid-cols-[420px_1fr] gap-8 max-w-7xl mx-auto">
+
+                      {/* Form */}
+
+                      <div className="lg:sticky lg:top-24 lg:self-start">
+
+                        <SimulationForm onSubmit={handleSimulate} isLoading={isLoading} />
+
+                      </div>
+
+      
+
+                      {/* Results */}
+
+                      <div className="space-y-6">
+
+                        {result ? (
+
+                          <>
+
+                            <VerdictCard result={result} onExportPDF={handleExportPDF} />
+
+                            <SummaryMetrics result={result} />
+
+                            <div className="grid md:grid-cols-2 gap-6">
+
+                              <RevenueChart projections={result.projections} />
+
+                              <CustomerGrowthChart projections={result.projections} />
+
+                            </div>
+
+                            <div className="grid md:grid-cols-2 gap-6">
+
+                              <MRRChart projections={result.projections} breakEvenMonth={result.summary.breakEvenMonth} />
+
+                              <ConfidenceGauge score={result.confidence.score} factors={result.confidence.factors} />
+
+                            </div>
+
+                          </>
+
+                        ) : (
+
+                          <div className="flex items-center justify-center min-h-[600px] rounded-2xl border border-dashed border-border/50 bg-gradient-to-br from-card/30 to-card/10 backdrop-blur-sm">
+
+                            <div className="text-center p-8 max-w-md">
+
+                              <div className="relative mx-auto mb-6 w-24 h-24">
+
+                                <div className="absolute inset-0 rounded-full bg-gradient-to-r from-primary/20 to-purple-500/20 animate-pulse" />
+
+                                <div className="absolute inset-2 rounded-full bg-background flex items-center justify-center">
+
+                                  <Rocket className="h-10 w-10 text-muted-foreground/50" />
+
+                                </div>
+
+                              </div>
+
+                              <h3 className="text-2xl font-semibold mb-3">Ready to Launch</h3>
+
+                              <p className="text-muted-foreground leading-relaxed">
+
+                                Configure your business parameters on the left panel and click
+
+                                <span className="text-primary font-medium"> Run Simulation </span>
+
+                                to generate comprehensive projections and insights.
+
+                              </p>
+
+                            </div>
+
+                          </div>
+
+                        )}
+
+                      </div>
+
+                    </div>
+
+                  </>
+
+                )}
+
+              </div>
+
+            </section>
 
       {/* Testimonials */}
       <section className="py-24 bg-card/20 border-t border-border/30">

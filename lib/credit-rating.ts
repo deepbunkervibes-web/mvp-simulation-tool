@@ -1,3 +1,9 @@
+/**
+ * MVP Simulation Tool — Credit Rating Module
+ * Protocol: SLAVKO-V7-ORCHESTRATION
+ * Governance: INSTITUTIONAL_SPECIFICATION_v1.0.md
+ */
+
 export type CreditRating = "AAA" | "AA" | "A" | "BBB" | "BB" | "B" | "CCC" | "D"
 
 export interface RatingFactor {

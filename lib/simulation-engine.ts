@@ -2,6 +2,9 @@
 // Core logic for business model validation
 
 import { calculateCreditRating, type CreditRating } from "@/lib/credit-rating"
+import { executeMVE } from "@/lib/engines/mve"
+import { executeGCE } from "@/lib/engines/gce"
+
 export interface SimulationInputs {
   monthlyLeads: number
   conversionRate: number // percentage
@@ -60,6 +63,13 @@ export interface SimulationResult {
 export function runSimulation(inputs: SimulationInputs): SimulationResult {
   const { monthlyLeads, conversionRate, price, churnRate, cac, validationScore, horizonMonths } = inputs
 
+  // 1. Execute Market Validation Engine (MVE)
+  const mveOutput = executeMVE({
+    monthlyLeads,
+    conversionRate,
+    rawValidationScore: validationScore,
+  })
+
   // Calculate derived metrics
   const monthlyNewCustomers = Math.round(monthlyLeads * (conversionRate / 100))
   const monthlyChurnRate = churnRate / 100
@@ -115,13 +125,20 @@ export function runSimulation(inputs: SimulationInputs): SimulationResult {
       100
       : 0
 
+  // 2. Execute Growth & Confidence Engine (GCE)
+  const gceOutput = executeGCE({
+    churnRate,
+    breakEvenMonth,
+    horizonMonths,
+  })
+
   // Calculate confidence score
   const factors: { name: string; score: number; weight: number; impact: "positive" | "neutral" | "negative" }[] = [
     {
-      name: "Validation Score",
-      score: validationScore,
+      name: "Market Validation (MVS)",
+      score: mveOutput.mvs,
       weight: 0.3,
-      impact: validationScore >= 70 ? "positive" : validationScore >= 40 ? "neutral" : "negative",
+      impact: mveOutput.mvs >= 70 ? "positive" : mveOutput.mvs >= 40 ? "neutral" : "negative",
     },
     {
       name: "LTV/CAC Ratio",
@@ -136,21 +153,10 @@ export function runSimulation(inputs: SimulationInputs): SimulationResult {
       impact: paybackPeriod <= 6 ? "positive" : paybackPeriod <= 12 ? "neutral" : "negative",
     },
     {
-      name: "Churn Rate",
-      score: Math.max(0, 100 - churnRate * 10),
-      weight: 0.15,
-      impact: churnRate <= 5 ? "positive" : churnRate <= 10 ? "neutral" : "negative",
-    },
-    {
-      name: "Break-even Timeline",
-      score: breakEvenMonth ? Math.max(0, 100 - breakEvenMonth * 5) : 0,
-      weight: 0.15,
-      impact:
-        breakEvenMonth && breakEvenMonth <= 12
-          ? "positive"
-          : breakEvenMonth && breakEvenMonth <= 24
-            ? "neutral"
-            : "negative",
+      name: "Growth Confidence (GCS)",
+      score: gceOutput.gcs,
+      weight: 0.3,
+      impact: gceOutput.gcs >= 70 ? "positive" : gceOutput.gcs >= 40 ? "neutral" : "negative",
     },
   ]
 
@@ -160,10 +166,10 @@ export function runSimulation(inputs: SimulationInputs): SimulationResult {
   let verdict: "GO" | "MAYBE" | "NO_GO"
   let verdictReason: string
 
-  if (confidenceScore >= 70 && ltvCacRatio >= 3 && validationScore >= 60) {
+  if (confidenceScore >= 70 && ltvCacRatio >= 3 && mveOutput.mvs >= 60 && gceOutput.gcs >= 60) {
     verdict = "GO"
     verdictReason = "Strong unit economics, validated market demand, and healthy growth trajectory. Ready to scale."
-  } else if (confidenceScore >= 45 || (ltvCacRatio >= 1.5 && validationScore >= 40)) {
+  } else if (confidenceScore >= 45 || (ltvCacRatio >= 1.5 && mveOutput.mvs >= 40 && gceOutput.gcs >= 40)) {
     verdict = "MAYBE"
     verdictReason = "Promising indicators but needs optimization. Focus on improving weak areas before scaling."
   } else {
